@@ -20,7 +20,7 @@ enum
   ST7735_INITR_18BLACKTAB  = ST7735_INITR_BLACKTAB, // 1.8"  (128x160) ST7735S chipset with black tab
 };
 
-#define ST7735_CHIPSET    ST7735_INITR_REDTAB // <= Set ST7735 LCD chipset/variation here (from above list)
+#define ST7735_CHIPSET ST7735_INITR_REDTAB // <= Set ST7735 LCD chipset/variation here (from above list)
 // NOTE: These are typical hookups individual boards will vary, please check your documentation.
 // CAUTION: While Adafruit boards generally always come with needed level-converters, I find many
 //          other LCD displays advertised as supporting 5V only support 5V power (with a regulator).
@@ -41,9 +41,9 @@ enum
 //
 //  * = Typically only 3.3V safe logic-line (unless board has level converter [ala Adafruit]). Be careful with 5V!
 
-#define ST7735_CS_PIN   PIN_LCD_CS  // <= /CS pin (chip-select, LOW to get attention of ST7735, HIGH and it ignores SPI bus)
-#define ST7735_DC_PIN   PIN_LCD_DC  // <= DC pin (1=data or 0=command indicator line) also called RS
-#define ST7735_RST_PIN  PIN_LCD_RST
+#define ST7735_CS_PIN  PIN_LCD_CS  // <= /CS pin (chip-select, LOW to get attention of ST7735, HIGH and it ignores SPI bus)
+#define ST7735_DC_PIN  PIN_LCD_DC  // <= DC pin (1=data or 0=command indicator line) also called RS
+#define ST7735_RST_PIN PIN_LCD_RST
 // (other pins used are dictated by AVR HW SPI used as shown above)
 
 // other PDQ library options
