@@ -11,6 +11,7 @@
 #include <SPI.h>
 #include <PDQ_GFX.h>             // PDQ: Core graphics library
 #include "PDQ_ST7735_config.h"   // PDQ: ST7735 pins and other setup for this sketch
+
 #include <PDQ_ST7735.h>          // PDQ: Hardware-specific driver library
 #include <Menu.h>
 #include <ClickEncoder.h>
@@ -26,6 +27,7 @@
 #ifdef PIDTUNE
 #include <PID_AutoTune_v0.h>
 #endif
+
 // ----------------------------------------------------------------------------
 volatile uint32_t    timerTicks       = 0;
 volatile uint8_t     phaseCounter     = 0;
@@ -566,9 +568,6 @@ void loop(void)
 #ifdef WITH_BEEPER
             tone(PIN_BEEPER,BEEP_FREQ,3000);  // Beep as a reminder that CoolDown starts (and maybe open up the oven door for fast enough cooldown)
 #endif
-#ifdef WITH_SERVO       
-          // TODO: implement servo operated lid
-#endif   
         }
 
         updateRampSetpoint(true);

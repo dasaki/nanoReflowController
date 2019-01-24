@@ -5,7 +5,6 @@
 //#define FAKE_HW 1
 //#define PIDTUNE 1 // autotune wouldn't fit in the 28k available on my arduino pro micro. // TODO: Figure out if this can be made to work? (breaks menu if enabled)
 #define WITH_BEEPER // Enables Beeper
-//#define WITH_SERVO // Enables Lid opening Servo (not yet implemented)
 //#define SERIAL_VERBOSE
 
 // run a calibration loop that measures how many timer ticks occur between 2 zero corssings
@@ -18,6 +17,7 @@
 #define WITH_SPLASH 1
 
 // display
+#define ST7735_CHIPSET ST7735_INITR_REDTAB // <= Set ST7735 LCD chipset/variation here (from list in PDQ_ST7735_config.h)
 static const uint8_t PIN_LCD_CS   = 10;
 static const uint8_t PIN_LCD_DC   = 9;
 static const uint8_t PIN_LCD_RST  = 8;
@@ -61,7 +61,6 @@ static const uint8_t FACTORY_FAN_ASSIST_SPEED = 33;
 // various settings
 static const uint8_t NUM_TEMP_READINGS  = 5;
 static const uint8_t TC_ERROR_TOLERANCE = 5; // allow for n consecutive errors due to noisy power supply before bailing out
-static const float   TEMP_COMPENSATION  = 1.0; // correction factor to match temperature measured with other device
 
 /*
 Kp: Determines how aggressively the PID reacts to the current amount of error (Proportional) (double >=0)
@@ -85,5 +84,10 @@ Experimental method to tune PID:
 #define FACTORY_KP  1.75 // 1.75 //4.0 
 #define FACTORY_KI 0.03 // 0.03 // 0.05 
 #define FACTORY_KD 3.0 //3.0//2.0 
+
+// allow the user to set their own configuration, which will not be committed to git
+#if __has_include("userdefs.h")
+#include "userdefs.h"
+#endif
 
 #endif // CONFIG_H

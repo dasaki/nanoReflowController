@@ -1,1 +1,5 @@
 #define ST7735_CHIPSET ST7735_INITR_144GREENTAB
+#define WITH_BEEPER
+#define SERIAL_VERBOSE
+#define MAINS_50HZ true
+#define WITH_SPLASH false
