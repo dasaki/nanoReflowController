@@ -70,4 +70,4 @@ bool saveParameters(uint8_t profile) {
   return true;
 }
 
-#endif EEPROM_HELPERS_H
+#endif // EEPROM_HELPERS_H

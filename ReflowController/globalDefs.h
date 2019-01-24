@@ -3,13 +3,14 @@
 
 #include "config.h"
 
-
 #ifdef MAINS_50HZ 
   static const uint8_t DEFAULT_LOOP_DELAY = 89;  // should be about 16% less for 60Hz mains
   static const uint8_t TICKS_PER_SEC      = 100; // for 50Hz mains:  2*50Hz = 100 ticks per second
-#else ifdef MAINS_60HZ
+#else
+#ifdef MAINS_60HZ
   static const uint8_t DEFAULT_LOOP_DELAY = 74;  // 60Hz mains = 74?
   static const uint8_t TICKS_PER_SEC      = 120; // for 60Hz mains:  2*60Hz = 120 ticks per second
+#endif
 #endif
 
 static const uint8_t TICKS_PER_UPDATE     = 25; // 
@@ -101,6 +102,4 @@ void makeDefaultProfile() {
   activeProfile.rampDownRate =   DEFAULT_RAMP_DOWN_RATE;
 }
 
-
-
-#endif GLOBAL_DEFS_H
+#endif // GLOBAL_DEFS_H
