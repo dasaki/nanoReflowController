@@ -2,20 +2,20 @@
 #define CONFIG_H
 
 //#define ALWAYS_FIRST_RUN
-//#define FAKE_HW 1
-//#define PIDTUNE 1 // autotune wouldn't fit in the 28k available on my arduino pro micro. // TODO: Figure out if this can be made to work? (breaks menu if enabled)
+//#define FAKE_HW
+//#define PIDTUNE // autotune wouldn't fit in the 28k available on my arduino pro micro. // TODO: Figure out if this can be made to work? (breaks menu if enabled)
 #define WITH_BEEPER // Enables Beeper
 // #define WITH_FAN // Enables Fan
 //#define SERIAL_VERBOSE
 
 // run a calibration loop that measures how many timer ticks occur between 2 zero corssings
 // FIXME: does not work reliably at the moment, so a oscilloscope-determined value is used.
-//#define WITH_CALIBRATION 1 // loop timing calibration
+//#define WITH_CALIBRATION // loop timing calibration
 
 //#define MAINS_60HZ true // define this if your power is 60hz for proper timing otherwise comment out this line for 50hz
-#define MAINS_50HZ true // define this if your power is 60hz for proper timing otherwise comment out this line for 50hz
+#define MAINS_50HZ // define this if your power is 60hz for proper timing otherwise comment out this line for 50hz
 
-#define WITH_SPLASH 1
+#define WITH_SPLASH
 
 // display
 #define ST7735_CHIPSET ST7735_INITR_REDTAB // <= Set ST7735 LCD chipset/variation here (from list in PDQ_ST7735_config.h)
