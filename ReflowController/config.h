@@ -5,6 +5,7 @@
 //#define FAKE_HW 1
 //#define PIDTUNE 1 // autotune wouldn't fit in the 28k available on my arduino pro micro. // TODO: Figure out if this can be made to work? (breaks menu if enabled)
 #define WITH_BEEPER // Enables Beeper
+// #define WITH_FAN // Enables Fan
 //#define SERIAL_VERBOSE
 
 // run a calibration loop that measures how many timer ticks occur between 2 zero corssings
