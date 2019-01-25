@@ -154,10 +154,11 @@ void displayThermocoupleData(uint8_t xpos, uint8_t ypos) {
 
   // temperature
   tft.setTextSize(2);
-  alignRightPrefix((int)temperature);
+  alignRightPrefix((int)(temperature + tempCorrVal));
+  
   switch (tcStat) {
     case 0:
-      tft.print((uint8_t)temperature);
+      tft.print((uint8_t)(temperature + tempCorrVal));
       tft.print("\367C");
       break;
     case 1:
@@ -184,12 +185,13 @@ extern const Menu::Item_t miRampUpRate, miRampDnRate, miSoakTime,
                           miSoakTempA, miSoakTempB, miPeakTime, miPeakTemp,
                           miLoadProfile, miSaveProfile,
                           miPidSettingP, miPidSettingI, miPidSettingD,
-                          miFanSettings;
+                          miTempCorr, miFanSettings;
 #else
 extern const Menu::Item_t miRampUpRate, miRampDnRate, miSoakTime, 
                           miSoakTempA, miSoakTempB, miPeakTime, miPeakTemp,
                           miLoadProfile, miSaveProfile,
-                          miPidSettingP, miPidSettingI, miPidSettingD;
+                          miPidSettingP, miPidSettingI, miPidSettingD,
+                          miTempCorr;
 #endif
 
 // ----------------------------------------------------------------------------
@@ -230,6 +232,7 @@ void getItemValuePointer(const Menu::Item_t *mi, double **d, int16_t **i) {
 #ifdef WITH_FAN
   if (mi == &miFanSettings) *i = &fanAssistSpeed;
 #endif
+  if (mi == &miTempCorr)    *i = &tempCorrVal;
 }
 
 // ----------------------------------------------------------------------------
@@ -346,6 +349,8 @@ bool menu_editNumericalValue(const Menu::Action_t action) {
     if (currentState == Edit) { // leave edit mode, return to menu
       if (isPidSetting(MenuEngine.currentItem)) {
         savePID();
+      } else if (MenuEngine.currentItem == &miTempCorr) {
+        saveTempCorr();
       }
 #ifdef WITH_FAN
       else if (MenuEngine.currentItem == &miFanSettings) {
@@ -596,15 +601,16 @@ MenuItem(miLoadProfile,  "Load Profile",  miSaveProfile,  miEditProfile,  miExit
 #ifdef WITH_FAN
 MenuItem(miSaveProfile,  "Save Profile",  miFanSettings,  miLoadProfile,  miExit,        Menu::NullItem, menu_saveLoadProfile   );
 MenuItem(miFanSettings,  "Fan Speed",     miPidSettings,  miSaveProfile,  miExit,        Menu::NullItem, menu_editNumericalValue);
-MenuItem(miPidSettings,  "Settings",  miFactoryReset, miFanSettings,  miExit,        miPidSettingP,  menuDummy              );
+MenuItem(miPidSettings,  "PID Settings",  miTempCorr,     miFanSettings,  miExit,        miPidSettingP,  menuDummy              );
 #else
 MenuItem(miSaveProfile,  "Save Profile",  miPidSettings,  miLoadProfile,  miExit,        Menu::NullItem, menu_saveLoadProfile   );
-MenuItem(miPidSettings,  "Settings",  miFactoryReset, miSaveProfile,  miExit,        miPidSettingP,  menuDummy              );
+MenuItem(miPidSettings,  "PID Settings",  miTempCorr,     miSaveProfile,  miExit,        miPidSettingP,  menuDummy              );
 #endif
-  MenuItem(miPidSettingP,  "Heater Kp",   miPidSettingI,  Menu::NullItem, miPidSettings, Menu::NullItem, menu_editNumericalValue);
-  MenuItem(miPidSettingI,  "Heater Ki",   miPidSettingD,  miPidSettingP,  miPidSettings, Menu::NullItem, menu_editNumericalValue);
-  MenuItem(miPidSettingD,  "Heater Kd",   Menu::NullItem, miPidSettingI,  miPidSettings, Menu::NullItem, menu_editNumericalValue);
-MenuItem(miFactoryReset, "Factory Reset", Menu::NullItem, miPidSettings,  miExit,        Menu::NullItem, menu_factoryReset      );
+  MenuItem(miPidSettingP,  "Kp (P)",      miPidSettingI,  Menu::NullItem, miPidSettings, Menu::NullItem, menu_editNumericalValue);
+  MenuItem(miPidSettingI,  "Ki (I)",      miPidSettingD,  miPidSettingP,  miPidSettings, Menu::NullItem, menu_editNumericalValue);
+  MenuItem(miPidSettingD,  "Kd (D)",      Menu::NullItem, miPidSettingI,  miPidSettings, Menu::NullItem, menu_editNumericalValue);
+MenuItem(miTempCorr,     "C. value:",      miFactoryReset, miPidSettings,  miExit,        Menu::NullItem, menu_editNumericalValue);
+MenuItem(miFactoryReset, "Factory Reset", Menu::NullItem, miTempCorr,     miExit,        Menu::NullItem, menu_factoryReset      );
 
 // ----------------------------------------------------------------------------
 
@@ -746,7 +752,7 @@ void updateProcessDisplay() {
   tft.drawPixel(dx, dy, ST7735_BLUE);
 
   // actual temperature
-  dy = h - ((uint16_t)temperature * pxPerC / 100) + yOffset;
+  dy = h - ((uint16_t)(temperature + tempCorrVal) * pxPerC / 100) + yOffset;
   tft.drawPixel(dx, dy, ST7735_RED);
 
   // bottom line

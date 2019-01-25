@@ -20,6 +20,7 @@ const char * ver = "3.2";
 
 double temperature;
 uint8_t tcStat = 0;
+int tempCorrVal = INITIAL_TEMP_CORRECTION;
 
 double Setpoint;
 double Input;

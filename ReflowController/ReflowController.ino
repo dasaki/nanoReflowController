@@ -259,15 +259,16 @@ void setup() {
   }
 
   // initialize moving average filter
-  runningTotalRampRate = temperature * NUM_TEMP_READINGS;
+  runningTotalRampRate = (temperature + tempCorrVal) * NUM_TEMP_READINGS;
   for(int i = 0; i < NUM_TEMP_READINGS; i++) {
-    airTemp[i].temp = temperature;
+    airTemp[i].temp = temperature + tempCorrVal;
   }
 
 #ifdef WITH_FAN
   loadFanSpeed();
 #endif
   loadPID();
+  loadTempCorr();
 
   PID.SetOutputLimits(0, 100); // max output 100%
   PID.SetSampleTime(PID_SAMPLE_TIME);
@@ -456,7 +457,7 @@ void loop(void)
 #endif
         // rolling average of the temp T1 and T2
         totalT1 -= readingsT1[index];       // subtract the last reading
-        readingsT1[index] = temperature;
+        readingsT1[index] = temperature + tempCorrVal;
         totalT1 += readingsT1[index];       // add the reading to the total
         index = (index + 1) % NUM_TEMP_READINGS;  // next position
         averageT1 = totalT1 / (float)NUM_TEMP_READINGS;  // calculate the average temp
@@ -565,9 +566,9 @@ void loop(void)
 #ifdef WITH_FAN
           PID.SetTunings(fanPID.Kp, fanPID.Ki, fanPID.Kd);
 #endif
-          Setpoint = activeProfile.peakTemp - 15; // get it all going with a bit of a kick! v sluggish here otherwise, too hot too long
+          Setpoint = activeProfile.peakTemp - 15; // get it all going with a bit of a kick! very sluggish here otherwise, too hot too long...
 #ifdef WITH_BEEPER
-          tone(PIN_BEEPER,BEEP_FREQ,3000);  // Beep as a reminder that CoolDown starts (and maybe open up the oven door for fast enough cooldown)
+          tone(PIN_BEEPER, BEEP_FREQ, 3000); // beep as a reminder that CoolDown starts (and maybe open up the oven door for fast enough cooldown)
 #endif
         }
 

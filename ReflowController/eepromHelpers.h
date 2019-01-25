@@ -8,6 +8,7 @@
 #ifdef WITH_FAN
 const uint16_t offsetFanSpeed   = maxProfiles * sizeof(Profile_t) + 1; // one byte
 #endif
+const uint16_t offsetTempCorr   = maxProfiles * sizeof(Profile_t) + 1; // one byte
 const uint16_t offsetProfileNum = maxProfiles * sizeof(Profile_t) + 2; // one byte
 const uint16_t offsetPidConfig  = maxProfiles * sizeof(Profile_t) + 3; // sizeof(PID_t)
 
@@ -22,6 +23,15 @@ bool loadPID() {
   do {} while (!(eeprom_is_ready()));
   eeprom_read_block(&heaterPID, (void *)offsetPidConfig, sizeof(PID_t));
   return true;  
+}
+
+void saveTempCorr() {
+  EEPROM.write(offsetTempCorr, (int8_t)tempCorrVal & 0xff);
+  delay(250);
+}
+
+void loadTempCorr() {
+  tempCorrVal = EEPROM.read(offsetTempCorr) & 0xff;
 }
 
 #ifdef WITH_FAN

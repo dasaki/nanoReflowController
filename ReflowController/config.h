@@ -25,6 +25,7 @@ static const uint8_t PIN_LCD_RST  = 8;
 static const uint8_t LCD_ROTATION = 3; // 0/2-> portrait, 1/3-> landscape
 
 // thermostat
+#define INITIAL_TEMP_CORRECTION 0 // +/- °C
 static const uint8_t PIN_TC_CS   = A1;
 static const uint8_t PIN_TC_DO   = 12;
 static const uint8_t PIN_TC_CLK  = 13;
