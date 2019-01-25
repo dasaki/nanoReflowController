@@ -45,7 +45,7 @@ bool loadParameters(uint8_t profile) {
   do {} while (!(eeprom_is_ready()));
   eeprom_read_block(&activeProfile, (void *)offset, sizeof(Profile_t));
 
-// TODO: WITH_CHECKSUM is defined in ReflowController.ino - is there any chance it could ever be set in here?
+// TODO: WITH_CHECKSUM is defined in ReflowController.ino - is there any chance it could ever be accessible in here?
 #ifdef WITH_CHECKSUM
   return activeProfile.checksum == crc8((uint8_t *)&activeProfile, sizeof(Profile_t) - sizeof(uint8_t));
 #else
