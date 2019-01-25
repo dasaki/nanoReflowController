@@ -237,7 +237,6 @@ void setup() {
 #endif
   
   setupPins();
- 
   setupTFT();
 
   if (firstRun()) {

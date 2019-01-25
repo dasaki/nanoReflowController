@@ -18,7 +18,6 @@ static const uint8_t TICKS_TO_REDRAW      = 50; //
 
 const char * ver = "3.2";
 
-
 double temperature;
 uint8_t tcStat = 0;
 

@@ -22,7 +22,7 @@
 
 // ----------------------------------------------------------------------------
 
-PDQ_ST7735 tft;     // PDQ: create LCD object (using pins in "PDQ_ST7735_config.h")
+PDQ_ST7735 tft; // PDQ: create LCD object (using pins in "PDQ_ST7735_config.h")
 
 // ------------ menu
 
@@ -289,8 +289,8 @@ bool menu_editNumericalValue(const Menu::Action_t action) {
     tft.setTextSize(1);
     if (initial) {
       tft.setTextColor(ST7735_BLACK, ST7735_WHITE);
-      tft.setCursor(MENU_TEXT_XPOS, 95);
-      tft.print("Edit & click to save.");
+      tft.setCursor(MENU_TEXT_XPOS, 100);
+      tft.print("Edit & click to save"); // no full stop as it was too far right on 1.44" displays
       Encoder.setAccelerationEnabled(true);
     }
 
@@ -386,9 +386,9 @@ void factoryReset() {
   saveFanSpeed();
 #endif
 
-  heaterPID.Kp =  FACTORY_KP;// 0.60; 
-  heaterPID.Ki =  FACTORY_KI; //0.01;
-  heaterPID.Kd = FACTORY_KD; //19.70;
+  heaterPID.Kp =  FACTORY_KP; //  0.60; 
+  heaterPID.Ki =  FACTORY_KI; //  0.01;
+  heaterPID.Kd = FACTORY_KD;  // 19.70;
   savePID();
 
   activeProfileId = 0;
@@ -490,11 +490,12 @@ bool menu_saveLoadProfile(const Menu::Action_t action) {
     if (encAbsolute > maxProfiles) encAbsolute = maxProfiles;
     if (encAbsolute <  0) encAbsolute =  0;
 
-    tft.setCursor(10, 95);
+    tft.setCursor(10, 98);
     tft.print("Click to ");
     tft.print((isLoad) ? "load " : "save ");
     tft.setTextColor(ST7735_WHITE, ST7735_RED);
     tft.print(encAbsolute);
+    tft.print(" ");
   }
 
   if (action == Menu::actionTrigger) {
@@ -609,34 +610,35 @@ MenuItem(miFactoryReset, "Factory Reset", Menu::NullItem, miPidSettings,  miExit
 
 void drawInitialProcessDisplay()
 {
-    const uint8_t h =  tft.height()-42;
+  const uint8_t h =  tft.height()-42;
   const uint8_t w = tft.width()-24;
   const uint8_t yOffset =  30; // space not available for graph  
-    double tmp;
- initialProcessDisplay = true;
+  double tmp;
+ 
+  initialProcessDisplay = true;
 
-    tft.fillScreen(ST7735_WHITE);
-    tft.fillRect(0, 0, tft.width(), menuItemHeight, ST7735_BLUE);
-    tft.setCursor(1, 2);
+  tft.fillScreen(ST7735_WHITE);
+  tft.fillRect(0, 0, tft.width(), menuItemHeight, ST7735_BLUE);
+  tft.setCursor(1, 2);
 #ifndef PIDTUNE
-    tft.print("Profile ");
-    tft.print(activeProfileId);
+  tft.print("Profile ");
+  tft.print(activeProfileId);
 #else
-    tft.print("Tuning ");
+  tft.print("Tuning ");
 #endif
 
-    tmp = h / (activeProfile.peakTemp * TEMPERATURE_WINDOW) * 100.0;
-    pxPerC = tmp;
-    
-    double estimatedTotalTime = 0;//60 * 12;
-    // estimate total run time for current profile
-    estimatedTotalTime = activeProfile.soakDuration + activeProfile.peakDuration;
-    estimatedTotalTime += (activeProfile.peakTemp - temperature)/(float)activeProfile.rampUpRate;
-    estimatedTotalTime += (activeProfile.peakTemp - temperature)/(float)activeProfile.rampDownRate;
-    estimatedTotalTime *= 1.1; // add some spare
-    
-    tmp = w / estimatedTotalTime ; 
-    pxPerSec = (float)tmp;
+  tmp = h / (activeProfile.peakTemp * TEMPERATURE_WINDOW) * 100.0;
+  pxPerC = tmp;
+  
+  double estimatedTotalTime = 0;//60 * 12;
+  // estimate total run time for current profile
+  estimatedTotalTime = activeProfile.soakDuration + activeProfile.peakDuration;
+  estimatedTotalTime += (activeProfile.peakTemp - temperature)/(float)activeProfile.rampUpRate;
+  estimatedTotalTime += (activeProfile.peakTemp - temperature)/(float)activeProfile.rampDownRate;
+  estimatedTotalTime *= 1.1; // add some spare
+  
+  tmp = w / estimatedTotalTime ; 
+  pxPerSec = (float)tmp;
    
 #ifdef SERIAL_VERBOSE
  Serial.print("estimatedTotalTime: ");
@@ -648,18 +650,19 @@ void drawInitialProcessDisplay()
     Serial.print("/");
     Serial.println(pxPerSec);
 #endif   
-    // 50°C grid
-    int16_t t = (uint16_t)(activeProfile.peakTemp * TEMPERATURE_WINDOW);
-    tft.setTextColor(tft.Color565(0xa0, 0xa0, 0xa0));
-    tft.setTextSize(1);
-    for (uint16_t tg = 0; tg < t; tg += 50) {
-      uint16_t l = h - (tg * pxPerC / 100) + yOffset;
-      tft.drawFastHLine(0, l, tft.width(), tft.Color565(0xe0, 0xe0, 0xe0));
-      tft.setCursor(tft.width()-24, l-7);
-      alignRightPrefix((int)tg); 
-      tft.print((int)tg);
-      tft.print("\367");
-    }
+  // 50°C grid
+  int16_t t = (uint16_t)(activeProfile.peakTemp * TEMPERATURE_WINDOW);
+  tft.setTextColor(tft.Color565(0xa0, 0xa0, 0xa0));
+  tft.setTextSize(1);
+  
+  for (uint16_t tg = 0; tg < t; tg += 50) {
+    uint16_t l = h - (tg * pxPerC / 100) + yOffset;
+    tft.drawFastHLine(0, l, tft.width(), tft.Color565(0xe0, 0xe0, 0xe0));
+    tft.setCursor(tft.width()-24, l-7);
+    alignRightPrefix((int)tg); 
+    tft.print((int)tg);
+    tft.print("\367");
+  }
 }
 
 // ----------------------------------------------------------------------------
@@ -697,7 +700,7 @@ void updateProcessDisplay() {
 #ifndef PIDTUNE
   // current state
   y -= 2;
-  tft.setCursor(tft.width()-65, y);
+  tft.setCursor(tft.width()-85, y);
   tft.setTextColor(ST7735_BLACK, ST7735_GREEN);
   
   switch (currentState) {
@@ -718,7 +721,7 @@ void updateProcessDisplay() {
 
   // set point
   y += 10;
-  tft.setCursor(tft.width()-65, y);
+  tft.setCursor(tft.width()-85, y);
   tft.print("Sp:"); 
   alignRightPrefix((int)Setpoint); 
   printDouble(Setpoint);
