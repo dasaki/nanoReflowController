@@ -258,25 +258,25 @@ bool getItemValueLabel(const Menu::Item_t *mi, char *label) {
     
     if (isRampSetting(mi)) {
       while(*p != '\0') p++;
-      *p++ = 0xf7; *p++ = 'C'; *p++ = '/'; *p++ = 's';
+      *p++ = 0xf7; *p++ = 'C'; *p++ = '/'; *p++ = 's'; *p++ = ' '; *p++ = ' ';
       *p = '\0';
     }
   }
   else {
-    if (mi == &miPeakTemp || mi == &miSoakTempA || mi == &miSoakTempB ) {
-      itostr(label, *iValue, "\367C");
+    if (mi == &miPeakTemp || mi == &miSoakTempA || mi == &miSoakTempB || &miTempCorr) {
+      itostr(label, *iValue, "\367C   ");
     }
     if (mi == &miPeakTime || mi == &miSoakTime) {
-      itostr(label, *iValue, "s");
+      itostr(label, *iValue, "s   ");
     }
 #ifdef WITH_FAN
     if (mi == &miFanSettings) {
-      itostr(label, *iValue, "%");
+      itostr(label, *iValue, "%   ");
     }
 #endif
   }
 
-  return dValue || iValue;
+  return (dValue || iValue);
 }
 
 // ----------------------------------------------------------------------------
