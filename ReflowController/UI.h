@@ -78,10 +78,9 @@ void   setupMenu() {
 }
 
 void displaySplash() {
-      tft.fillScreen(ST7735_WHITE);
-       
+  tft.fillScreen(ST7735_WHITE);
   tft.setTextColor(ST7735_BLACK);
-  // splash screen
+  
   tft.setCursor(2, 30);
   tft.setTextSize(2);
   tft.print("Reflow");
@@ -92,9 +91,10 @@ void displaySplash() {
   tft.print("v"); tft.print(ver);
   
   tft.setCursor(0, 109);
-  tft.print("(c)2014 karl@pitrich.com");
+  tft.print("(c)2014 0xPIT");
   tft.setCursor(0, 119);
   tft.print("(c)2017 Dasaki");
+  
   delay(3000);
 }
 
@@ -107,36 +107,34 @@ void displayError(int error) {
   tft.setCursor(10, 10);
   
   if (error < 9) {
-    tft.println("Thermocouple Error");
+    tft.println("Thermocouple error!");
     tft.setCursor(10, 30);
     switch (error) {
       case 0b001:
-        tft.println("Open Circuit");
+        tft.println("Open circuit!");
         break;
       case 0b010:
-        tft.println("GND Short");
+        tft.println("GND short!");
         break;
       case 0b100:
-        tft.println("VCC Short");
+        tft.println("VCC short!");
         break;
     }
     tft.setCursor(10, 60);
     tft.println("Power off,");
     tft.setCursor(10, 75);
-    tft.println("check connections");
+    tft.println("check connections!");
   }
   else {
-    tft.println("Temperature"); 
-    tft.setCursor(10, 30);
-    tft.println("following error");
+    tft.println("Temperature error");
     tft.setCursor(10, 45);
     tft.print("during ");
     tft.println((error == 10) ? "heating" : "cooling");
   }
   #ifdef WITH_BEEPER
-    tone(PIN_BEEPER,BEEP_FREQ,2000);  //Error Beep
+    tone(PIN_BEEPER,BEEP_FREQ,2000); // error beep
   #endif
-  while (1) { //  stop
+  while (1) { // stop
     ;
   }
 }
@@ -144,7 +142,7 @@ void displayError(int error) {
 // ----------------------------------------------------------------------------
 
 void alignRightPrefix(uint16_t v) {
-  if (v < 1e2) tft.print(' '); 
+  if (v < 1e2) tft.print(' ');
   if (v < 1e1) tft.print(' ');
 }
 
@@ -215,7 +213,6 @@ void printDouble(double val, uint8_t precision = 1) {
   ftoa(buf, val, precision);
   tft.print(buf);
 }
-
 
 // ----------------------------------------------------------------------------
 
@@ -541,7 +538,6 @@ bool menu_cycleStart(const Menu::Action_t action) {
 // ----------------------------------------------------------------------------
 
 void renderMenuItem(const Menu::Item_t *mi, uint8_t pos) {
-  //ScopedTimer tm("  render menuitem");
   bool isCurrent = MenuEngine.currentItem == mi;
   uint8_t y = pos * menuItemHeight + 2;
 
@@ -564,7 +560,7 @@ void renderMenuItem(const Menu::Item_t *mi, uint8_t pos) {
 
   // show values if in-place editable items
   if (getItemValueLabel(mi, buf)) {
-    tft.print(' '); tft.print(buf); tft.print("   ");
+    tft.print(" "); tft.print(buf); tft.print("   ");
   }
 
   // mark items that have children
@@ -599,10 +595,10 @@ MenuItem(miLoadProfile,  "Load Profile",  miSaveProfile,  miEditProfile,  miExit
 #ifdef WITH_FAN
 MenuItem(miSaveProfile,  "Save Profile",  miFanSettings,  miLoadProfile,  miExit,        Menu::NullItem, menu_saveLoadProfile   );
 MenuItem(miFanSettings,  "Fan Speed",     miPidSettings,  miSaveProfile,  miExit,        Menu::NullItem, menu_editNumericalValue);
-MenuItem(miPidSettings,  "PID Settings",  miFactoryReset, miFanSettings,  miExit,        miPidSettingP,  menuDummy              );
+MenuItem(miPidSettings,  "Settings",  miFactoryReset, miFanSettings,  miExit,        miPidSettingP,  menuDummy              );
 #else
 MenuItem(miSaveProfile,  "Save Profile",  miPidSettings,  miLoadProfile,  miExit,        Menu::NullItem, menu_saveLoadProfile   );
-MenuItem(miPidSettings,  "PID Settings",  miFactoryReset, miSaveProfile,  miExit,        miPidSettingP,  menuDummy              );
+MenuItem(miPidSettings,  "Settings",  miFactoryReset, miSaveProfile,  miExit,        miPidSettingP,  menuDummy              );
 #endif
   MenuItem(miPidSettingP,  "Heater Kp",   miPidSettingI,  Menu::NullItem, miPidSettings, Menu::NullItem, menu_editNumericalValue);
   MenuItem(miPidSettingI,  "Heater Ki",   miPidSettingD,  miPidSettingP,  miPidSettings, Menu::NullItem, menu_editNumericalValue);
